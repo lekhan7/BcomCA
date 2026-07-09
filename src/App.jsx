@@ -1,51 +1,58 @@
-import React, { useRef, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import Home from './Home'
+import React, { useRef, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./Home";
 
 function App() {
-  const audioRef = useRef(null)
+  const audioRef = useRef(null);
 
   useEffect(() => {
-    const audio = audioRef.current
-    if (!audio) return
+    const audio = audioRef.current;
+    if (!audio) return;
 
-    // Try real autoplay first (works if browser allows it)
+    audio.loop = true;
+    audio.preload = "auto";
+    audio.volume = 0.5;
+
+    const playMusic = () => {
+      audio.play().catch((err) => {
+        console.log("Playback failed:", err);
+      });
+
+      window.removeEventListener("click", playMusic);
+      window.removeEventListener("touchstart", playMusic);
+      window.removeEventListener("keydown", playMusic);
+    };
+
+    // Try autoplay
     audio.play().catch(() => {
-      // Blocked — fall back to muted autoplay, unmute on first interaction
-      audio.muted = true
-      audio.play().catch(err => console.log('Even muted play blocked:', err))
+      console.log("Autoplay blocked. Waiting for user interaction...");
 
-      const unmute = () => {
-        audio.muted = false
-        audio.play().catch(() => { })
-        window.removeEventListener('hover', unmute)
-        window.removeEventListener('touchstart', unmute)
-        window.removeEventListener('scroll', unmute)
-        window.removeEventListener('keydown', unmute)
-      }
+      window.addEventListener("click", playMusic, { once: true });
+      window.addEventListener("touchstart", playMusic, { once: true });
+      window.addEventListener("keydown", playMusic, { once: true });
+    });
 
-      window.addEventListener('hover', unmute)
-      window.addEventListener('touchstart', unmute)
-      window.addEventListener('scroll', unmute)
-      window.addEventListener('keydown', unmute)
-    })
-  }, [])
+    return () => {
+      window.removeEventListener("click", playMusic);
+      window.removeEventListener("touchstart", playMusic);
+      window.removeEventListener("keydown", playMusic);
+    };
+  }, []);
 
   return (
     <>
       <audio
         ref={audioRef}
-        src='/Inaam%20Jasleen%20Royal%20128%20Kbps.mp3'
-        className='inaam'
-        loop
+        src="/music.mp3" // Put music.mp3 inside the public folder
       />
+
       <Router>
         <Routes>
-          <Route element={<Home />} path="/" />
+          <Route path="/" element={<Home />} />
         </Routes>
       </Router>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
