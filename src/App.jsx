@@ -18,13 +18,13 @@ function App() {
       const unmute = () => {
         audio.muted = false
         audio.play().catch(() => { })
-        window.removeEventListener('click', unmute)
+        window.removeEventListener('hover', unmute)
         window.removeEventListener('touchstart', unmute)
         window.removeEventListener('scroll', unmute)
         window.removeEventListener('keydown', unmute)
       }
 
-      window.addEventListener('click', unmute)
+      window.addEventListener('hover', unmute)
       window.addEventListener('touchstart', unmute)
       window.addEventListener('scroll', unmute)
       window.addEventListener('keydown', unmute)
