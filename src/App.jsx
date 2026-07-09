@@ -43,7 +43,7 @@ function App() {
     <>
       <audio
         ref={audioRef}
-        src="/music.mp3" // Put music.mp3 inside the public folder
+        src="/Inaam Jasleen Royal 128 Kbps.mp3" // Put music.mp3 inside the public folder
       />
 
       <Router>
